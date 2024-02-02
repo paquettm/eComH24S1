@@ -22,3 +22,65 @@ git commit -m "adding instructions"
 ```
 
 I should normally have to set up my identity on a computer if this was not previously done.
+
+```
+git config user.name "Michel Paquette"
+```
+
+```
+git config user.email "paquettm@vaniercollege.qc.ca"
+```
+
+```
+git add .
+```
+
+```
+git commit -m "adding instructions"
+```
+
+
+**** fix the problem where I can't push from the school compputers... are there ports that are blocked? ******
+
+
+## Running the Docker container to host the Web application
+
+Start Docker Desktop first.
+
+Then run 
+```
+docker run --name myXampp -p 22:22 -p 80:80 -d -v C:/Users/paquettm/eComH24S1:/opt/lampp/htdocs tomsik68/xampp
+```
+
+## Accessing the project
+
+Open a browser and point it to
+
+```
+http://localhost
+```
+
+## Bootstrap the project
+
+Create a file called `.htaccess`.
+```
+Options -MultiViews
+Options -Indexes
+
+RewriteEngine On
+
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
+RewriteRule ^()$ index.php?url=$1 [QSA,L]
+```
+Copy this file exactly, don't add a single character.
+
+## core folder
+
+holds all the framework core functionality that will not be modified by the programmer/user
+
+
