@@ -89,3 +89,4 @@ The App class is there to call the appropriate Controller class and method for t
 
 Controllers contain the application logic that constitutes the glue between the request (after routing) the models and the views.
 
+To be continued.
