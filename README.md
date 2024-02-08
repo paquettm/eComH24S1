@@ -96,3 +96,7 @@ To be continued...
 - Adding a view method to our Person controller
 - Refactoring by moving the view method to a Controller superclass
 - Introducitng views
+
+## TODO
+
+solve git push problem in room D-242 or D-241?
