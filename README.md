@@ -95,7 +95,7 @@ To be continued...
 
 - Adding a view method to our Person controller
 - Refactoring by moving the view method to a Controller superclass
-- Introducitng views
+- Introducing views
 
 ## TODO
 
