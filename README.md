@@ -94,8 +94,15 @@ To be continued...
 ## UP NEXT
 
 - Adding a view method to our Person controller
+  - $this
+  - calling methods in general and the view method
 - Refactoring by moving the view method to a Controller superclass
+  - calling the view method again
 - Introducing views
+  - passing data with parameters and using local variables
+  - displaying simple data
+  - foreach with sequential and associative arrays
+- Calling a partial view from within a view
 
 ## TODO
 
