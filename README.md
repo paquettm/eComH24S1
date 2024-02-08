@@ -99,4 +99,4 @@ To be continued...
 
 ## TODO
 
-solve git push problem in room D-242 or D-241?
+solve git push problem in room D-242 or D-241? (Works from Office workstation.)
