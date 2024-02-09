@@ -91,7 +91,9 @@ Controllers contain the application logic that constitutes the glue between the 
 
 To be continued...
 
-## UP NEXT
+## Theory session 2
+
+The following themes were adressed:
 
 - Adding a view method to our Person controller
   - $this
@@ -102,8 +104,14 @@ To be continued...
   - passing data with parameters and using local variables
   - displaying simple data
   - foreach with sequential and associative arrays
+
+## up next
+
+- Routing
+- Autoloading
+- Assignment 1: Static website (to be published)
 - Calling a partial view from within a view
 
 ## TODO
 
-solve git push problem in room D-242 or D-241? (Works from Office workstation.)
+solve git push problem in room D-241? (Works from Office workstation and D-242.)
