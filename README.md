@@ -107,8 +107,8 @@ The following themes were adressed:
 
 ## up next
 
-- Routing
-- Autoloading
+- Routing 
+- Autoloading (See php_guide repo)
 - Assignment 1: Static website (to be published)
 - Calling a partial view from within a view
 
