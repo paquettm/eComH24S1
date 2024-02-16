@@ -2,7 +2,24 @@
 namespace app\core;
 
 class App{
+    private $routes = [];
+
+    public function addRoute($url,$handler){
+        $url = preg_replace('/{([^\/]+)}/', '(?<$1>[^\/]+)', $url);
+        $this->routes[$url] = $handler;
+    }
+
     function __construct(){
+
+  /*      $this->addRoute('Person/edit/{id}', 'Person,edit');
+        echo '<pre>';
+        print_r($this->routes);
+        echo '</pre>';
+
+*/
+//        exit();
+
+
     	//call the appropriate controller class and method to handle the HTTP Request
 
         //Routing version 0.1
@@ -14,7 +31,7 @@ class App{
                     'Person/complete_registration'=>'Person,complete_registration',
                     'Person/'=>'Person,list',
                     'Person/delete' => 'Person,delete',
-                    'Person/edit' => 'Person,edit',
+                    'Person/edit/{id}' => 'Person,edit',
                     'Person/update' => 'Person,update'];
 
         //one by one compare the url to resolve the route
