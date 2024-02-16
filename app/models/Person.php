@@ -35,6 +35,37 @@ class Person{
 		fclose($file_handle);
 	}
 
+
+	public function update(){
+		//read the entire file
+		$filename = "resources/People.txt";
+		//get the contents of the file in this array (line by line)
+		$file_contents = file($filename);
+
+		//open the new version of the same file
+		$file_handle = fopen($filename, 'w');
+		//obtain a lock on the file (avoid reading data that is changing)
+		flock($file_handle, LOCK_EX);
+		//start at the first line
+		$counter = 0;
+		$size = count($file_contents);
+		while($counter < $size){
+			if($this->id != $counter){
+				fwrite($file_handle, $file_contents[$counter]);
+			}else{
+				//add the modified record
+				//format the data and write to the file
+				unset($this->id);
+				$data = json_encode($this);
+				fwrite($file_handle, $data . "\n");//place a single record on each line
+			}
+			$counter++;//next record
+		}		
+		flock($file_handle, LOCK_UN);
+		fclose($file_handle);
+
+	}
+
 	public static function getAll(){
 		//read the file and return the collection of people (all Person records)
 		$filename = 'resources/People.txt';
@@ -47,6 +78,42 @@ class Person{
 			$records[$key] = $person;
 		}
 		return $records;
+	}
+
+	//delete a record at line $id in the file
+	public static function delete($id){
+		//read the entire file
+		$filename = "resources/People.txt";
+		//get the contents of the file in this array (line by line)
+		$file_contents = file($filename);
+
+		//open the new version of the same file
+		$file_handle = fopen($filename, 'w');
+		//obtain a lock on the file (avoid reading data that is changing)
+		flock($file_handle, LOCK_EX);
+		//start at the first line
+		$counter = 0;
+		$size = count($file_contents);
+		while($counter < $size){
+			if($id != $counter){
+				fwrite($file_handle, $file_contents[$counter]);
+			}//else it is skipped
+			$counter++;//next record
+		}		
+		flock($file_handle, LOCK_UN);
+		fclose($file_handle);
+	}
+
+	public static function get($id){
+		//read the file and return the collection of people (all Person records)
+		$filename = 'resources/People.txt';
+		$records = file($filename);
+		//process the JSON string into an object
+		$object = json_decode($records[$id]);
+		$person = new \app\models\Person($object);
+		$person->id = $id;
+		//return the record
+		return $person;
 	}
 
 }
