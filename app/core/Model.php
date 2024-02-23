@@ -16,7 +16,7 @@ class Model{
 			if(self::$_conn == null){
 				self::$_conn = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
 				//for development purposes, we cause exceptions on all problems instead of only warnings
-				self::$_conn->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+				self::$_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			}//otherwise the connection exists
 		} catch(PDOException $e) {
 			echo $e->getMessage();
