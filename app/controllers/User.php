@@ -87,7 +87,7 @@ class User extends \app\core\Controller{
 	}
 
 	function delete(){
-		if(!isset($_SESSION['user_id'])){
+		if(!isset($_SESSION['user_id'])){//is not logged in
 			header('location:/User/login');
 			return;
 		}

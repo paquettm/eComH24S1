@@ -47,6 +47,7 @@ class User extends \app\core\Model{
 		$STMT->execute((array)$this);
 	}
 
+
 	//delete - this is a special delete to deactivate accounts
 	function delete(){
 		//change anything but the PK
