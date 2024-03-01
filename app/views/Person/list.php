@@ -9,7 +9,7 @@
 
 	<a href='/Person/register'>Add a new person record</a>
 
-	<div id='container'>
+	<div class='container'>
 		<table>
 			<tr><th>first_name</th><th>last_name</th><th>email</th><th>weekly_flyer</th><th>mailing_list</th><th>Delete</th><th>Edit</th></tr>
 

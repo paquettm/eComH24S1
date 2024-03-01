@@ -8,15 +8,14 @@
 	<div class='container'>
 		<form method='post' action=''>
 			<div class="form-group">
-				<label>Username:<input type="text" class="form-control" name="username" placeholder="Jon" value='<?= $data->username ?>' /></label>
+				<label>First name:<input type="text" class="form-control" name="first_name" placeholder="Jon" value='<?= $data->first_name ?>' /></label>
 			</div>
 			<div class="form-group">
-				<label>Password:<input type="password" class="form-control" name="password" placeholder="password" /></label>
+				<label>Last name:<input type="text" class="form-control" name="last_name" placeholder="Doe" value='<?= $data->last_name ?>' /></label>
 			</div>
-
 			<div class="form-group">
-				<input type="submit" name="action" value="Update" /> 
-				<a href='/User/login'>Cancel</a>
+				<input type="submit" name="action" value="Record my profile" /> 
+				<a href='/Profile/index'>Cancel</a>
 			</div>
 		</form>
 	</div>
