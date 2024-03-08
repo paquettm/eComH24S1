@@ -38,42 +38,7 @@ class App{
         return false;
     }
 
-    function __construct(){
-    	//call the appropriate controller class and method to handle the HTTP Request
-
-        //Routing version 1.0
-        //TODO: add PARAMETERS - later
-        $url = $_GET['url'];
-
-        //defined a few routes "url"=>"controller,method"
-        $this->addRoute('Person/register','Person,register');
-        $this->addRoute('Person/complete_registration','Person,complete_registration');
-        $this->addRoute('Person/','Person,list');
-        $this->addRoute('Person/delete' , 'Person,delete');
-        $this->addRoute('Person/edit/{id}' , 'Person,edit');
-        $this->addRoute('Person/update' , 'Person,update');
-        $this->addRoute('User/register' , 'User,register');
-        $this->addRoute('User/login' , 'User,login');
-        $this->addRoute('User/logout' , 'User,logout');
-        $this->addRoute('User/update' , 'User,update');
-        $this->addRoute('User/delete' , 'User,delete');
-        $this->addRoute('User/securePlace' , 'Profile,index');
-        $this->addRoute('Profile/index' , 'Profile,index');
-        $this->addRoute('Profile/create' , 'Profile,create');
-        $this->addRoute('Profile/modify' , 'Profile,modify');
-        $this->addRoute('Profile/delete' , 'Profile,delete');
-        $this->addRoute('Friend/add/{id1}/{id2}','Friend,add');
-
-        [$controllerMethod, $namedParams] = $this->resolve($url);
-
-        if(!$controllerMethod){
-            return;
-        }
-
-        [$controller,$method]=explode(',', $controllerMethod);
-
-        $controller = '\app\controllers\\' . $controller;
-        $controllerInstance = new $controller();
+    function filtered($controllerInstance, $method){
 
         //create an object that can get information about the controller
         $reflection = new \ReflectionClass($controllerInstance);
@@ -88,8 +53,32 @@ class App{
             $filter = $attribute->newInstance();
             //run the filter and test if redirected
             if($filter->redirected()){
-                return;
+                return true;
             }
+        }
+        return false;
+    }
+
+
+    function __construct(){
+    	//call the appropriate controller class and method to handle the HTTP Request
+        //Routing version 1.0
+
+        $url = $_GET['url'];
+
+        include('app/routes.php');
+
+        [$controllerMethod, $namedParams] = $this->resolve($url);
+
+        if(!$controllerMethod){ return;  }
+
+        [$controller,$method] = explode(',', $controllerMethod);
+
+        $controller = '\app\controllers\\' . $controller;
+        $controllerInstance = new $controller();
+
+        if($this->filtered($controllerInstance, $method)){
+            return;
         }
 
         call_user_func_array([$controllerInstance, $method], $namedParams);
