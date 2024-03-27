@@ -155,12 +155,13 @@ You may be told that modules are added and asked if you wisht to run `composer u
 Answer `y` for yes.
 
 If you get any error, it is likely because codeception was not able to access the correct files because of the path.
-delete the test folder, composer.json, composer.lock, and the vendor folder with the following commands:
+delete the tests and vendor folders, composer.json, composer.lock, and codeception.yml with the following commands:
 ```
 rm -rf tests
 rm -rf vendor
 rm composer.lock
 rm composer.json
+rm codeception.yml
 ```
 Export . to the path as follows:
 ```
@@ -168,24 +169,27 @@ export PATH = $PATH:.
 ```
 Re-do section `Add Codeception to your project` and restart this section.
 
-
 ### Configuring Codeception
 
-We will now configure the way that our tests are run by default by modifying the acceptance.suite.yml file in the tests folder. We wish specifically to change the main server URL to localhost as in the following example: 
+We will now configure the way that our tests are run by default by modifying the `Acceptance.suite.yml` file in the tests subfolder. 
+Specifically change `localhost/myapp` to `localhost` as in the following example: 
 
 ```
-# Codeception Test Suite Configuration 
-# 
-# Suite for acceptance tests. 
-# Perform tests in browser using the WebDriver or PhpBrowser. 
-# If you need both WebDriver and PHPBrowser tests - create a separate suite. 
- 
-actor: AcceptanceTester 
-modules: 
-    enabled: 
-        - PhpBrowser: 
-            url: http://localhost/ 
-step_decorators: ~         
+# Codeception Acceptance Test Suite Configuration
+#
+# Perform tests in a browser by either emulating one using PhpBrowser, or in a real browser using WebDriver.
+# If you need both WebDriver and PhpBrowser tests, create a separate suite for each.
+
+actor: AcceptanceTester
+modules:
+    enabled:
+        - PhpBrowser:
+            url: http://localhost/
+# Add Codeception\Step\Retry trait to AcceptanceTester to enable retries
+step_decorators:
+    - Codeception\Step\ConditionalAssertion
+    - Codeception\Step\TryTo
+    - Codeception\Step\Retry       
 ```
 
 ## Building Test Suites 
@@ -200,8 +204,12 @@ To generate your first feature file example, run the following command
 codecept g:feature Acceptance google
 ```
 Here we are asking codeception (`codecept`) to generate (`g:`) a `feature` in the `Acceptance` test folder with the name `google`.
-If you navigate to the `tests/Acceptance` subfolder, you will find a new file named `google.feature`. 
-Open this file.
+In the `tests/Acceptance` subfolder, we can find a new file named `google.feature`. 
+Open this file, e.g.:
+```
+nano tests/Acceptance/google.feature
+```
+If you use nano, make your changes, then CTRL-O + ENTER to save the changed to your opened file and CTRL-X to exit.
 
 ### Complete Feature Files
 Let’s write the feature specification and test scenarios that make up the acceptance tests.
@@ -300,7 +308,7 @@ Codeception provides the function definitions to be completed to ensure proper t
 
 ### Generating The Functions
 Copy the code snippets from the screen output (In Windows by selecting them and pressing the ENTER key).
-Paste the snippets in the `tests/_support/AcceptanceTester.php` file within the `class AcceptanceTester` definition. 
+Paste the snippets in the `tests/Support/AcceptanceTester.php` file within the `class AcceptanceTester` definition. 
 
 Replace the function bodies with logic that will provide meaning to the sentences that we put in the test scenarios.
 In our example: 
@@ -337,6 +345,7 @@ In our example:
          $this->see($arg1);//assert that you can see the string 
      }
 ```
+Notice above that we have changed parameter names and that if you only copy and pasted method contents, you should see corresponding errors in the next step.
 
 ### Running a Test
 Your first test is complete.
