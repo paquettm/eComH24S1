@@ -1,4 +1,4 @@
-# Codeception for Acceptance Testing (Linux Docker image in Windows) 
+# Codeception for Acceptance Testing (with Linux Docker Container Running in Windows) 
 
 This is an introduction to using Codeception, a testing framework built upon widely used tools such as PHPUnit.
 Codeception is the standard for testing (unit, functional, and acceptance testing) of PHP applications. 
