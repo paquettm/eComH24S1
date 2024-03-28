@@ -165,7 +165,7 @@ rm codeception.yml
 ```
 Export . to the path as follows:
 ```
-export PATH = $PATH:.
+export PATH=$PATH:.
 ```
 Re-do section `Add Codeception to your project` and restart this section.
 
