@@ -66,9 +66,21 @@ This runs the bash terminal program and gives you access at the command line.
 
 Now we start by setting up our project with Codeception: 
 
+### Ensuring Correct Script execution
+
+We must ensure that the path contains the current folder to allow all scripts to run correctly.
+Check if your path contains `.` by running
+```
+echo $PATH
+```
+If it does not, run the following to append `.` to the end of the path: 
+```
+export PATH=$PATH:.
+```
+
 ### Shortcut to the PHP interpreter
 To simplify life, write a `php` file in your project folder to invoke the php executable with all the parameters forwarded to the php executable.
-This is done by adding a file called `php` to the `/opt/lampp/htdocs` folder and with the following contents:
+This is done by adding a file called `php` to the `/opt/lampp/htdocs` folder, the file `/opt/lampp/htdocs/php`, and with the following contents:
 ``` 
 #!/bin/bash
 
@@ -78,28 +90,24 @@ and then, top make it executable,
 ```
 chmod +x php
 ```
-The php executable is located in the /opt/lampp/bin folder in our example.
-The `"$@"` term will take all parameters from the command-line call to the `php` script and forward them to the call to the `php` executable. 
+**Note it is important to name the file exactly `/opt/lampp/htdocs/php` with no extension for the next steps to work as written.**
+The `"$@"` term will take all parameters from the command-line call to the `php` script and forward them to the call to the `php` executable.
+The php executable is located in the `/opt/lampp/bin` folder in the Docker image we use in this example;
+if your `php` executable is located elsewhere, use its full path to replace that of the example.
  
 ### Get Composer
 
-For convenience and as a temporary measure, we will add . to the path to allow simplified running of scripts.
-Run
-```
-export PATH=$PATH:.
-```
-
-Get and install composer by following the instructions from the top of the page at `https://getcomposer.org/download/` which may be identical to those in the box below.
+Get and install composer by following the instructions from the top of the page at `https://getcomposer.org/download/` which may be identical to those in the box below (date: March 27, 2024).
 ```
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 php composer-setup.php
 php -r "unlink('composer-setup.php');"
 ```
-The instructions will install the composer.phar file to the current folder (/opt/lampp/htdocs which was mapped to your project folder).
+The instructions will install the `composer.phar` file to the current folder (`/opt/lampp/htdocs` which was mapped to your project folder).
  
 ### Shortcut to Composer
-To simplify life, now write a file named `composer` in the `/opt/lampp/htdocs` folder to run `php composer.phar` with all remaining parameters after.
+We now write another shortcut file named `composer` in the `/opt/lampp/htdocs` folder, full path `/opt/lampp/htdocs/composer`, to run `php composer.phar`, forwarding all call parameters.
 The file contains: 
 ```
 #!/bin/bash
@@ -113,14 +121,14 @@ chmod +x composer
 
 ### Add Codeception to your project
 
-To add Codeception to your project development dependencies, in your project base folder run 
-
+To add Codeception to your project development dependencies we use composer.
+From the CLI, while located in your project base folder, run 
 ```
 composer require "codeception/codeception" --dev 
 ```
-If you ever get an error such as `bash: YOUR_COMMAND: command not found` where YOUR_COMMAND can be any command, then simply add ./ in front of the command to run it (if it is there in the present working directory (or run the export bit shown above).
+If you ever get an error such as `bash: YOUR_COMMAND: command not found` where YOUR_COMMAND can be any command, then run the PATH export command shown above.
 
-You should see a new folder appear: vendor.
+**You should see a new folder appear: vendor.**
 If it was already there, then some other subfolders probably appeared and, especially notice the `composer.json` file should now contain mention of Codeception in a dev section, similar (but maybe different) to the following: 
 ```
 { 
@@ -132,8 +140,7 @@ If it was already there, then some other subfolders probably appeared and, espec
 
 ### Shortcut to Codeception
 
-Next, for convenience again, we create a script `/opt/lampp/htdocs/codecept` as a shortcut to the codecept script as, containing: 
- 
+Next, we create a script file named `codecept` in the `/opt/lampp/htdocs/` directory, maybe with the command `nano /opt/lampp/htdocs/codecept`, as a shortcut to the codecept script, containing: 
 ```
 #!/bin/bash
 
