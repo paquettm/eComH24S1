@@ -78,7 +78,7 @@ and then, top make it executable,
 ```
 chmod +x php
 ```
-The php executable is located in the /opt/lmpp/bin folder in our example.
+The php executable is located in the /opt/lampp/bin folder in our example.
 The `"$@"` term will take all parameters from the command-line call to the `php` script and forward them to the call to the `php` executable. 
  
 ### Get Composer
