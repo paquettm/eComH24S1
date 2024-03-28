@@ -171,7 +171,7 @@ Re-do section `Add Codeception to your project` and restart this section.
 
 ### Configuring Codeception
 
-We will now configure the way that our tests are run by default by modifying the `Acceptance.suite.yml` file in the tests subfolder. 
+We will now configure the way that our tests are run by default by modifying the `Acceptance.suite.yml` file in the `tests` subfolder. 
 Specifically change `localhost/myapp` to `localhost` as in the following example: 
 
 ```
