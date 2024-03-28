@@ -80,13 +80,15 @@ export PATH=$PATH:.
 
 ### Shortcut to the PHP interpreter
 To simplify life, write a `php` file in your project folder to invoke the php executable with all the parameters forwarded to the php executable.
-This is done by adding a file called `php` to the `/opt/lampp/htdocs` folder, the file `/opt/lampp/htdocs/php`, and with the following contents:
+This is done by adding a file called `php` to the `/opt/lampp/htdocs` folder, for example with the nano editor using the command `nano /opt/lampp/htdocs/php`, and then adding the following contents:
 ``` 
 #!/bin/bash
 
 /opt/lampp/bin/php "$@"
 ``` 
-and then, top make it executable,
+If you use nano as your text editor, make your changes, then press CTRL-O + ENTER to save the changed to your opened file and press CTRL-X to exit.
+
+Then, we must make the script executable with the following Linux command:
 ```
 chmod +x php
 ```
@@ -94,7 +96,10 @@ chmod +x php
 The `"$@"` term will take all parameters from the command-line call to the `php` script and forward them to the call to the `php` executable.
 The php executable is located in the `/opt/lampp/bin` folder in the Docker image we use in this example;
 if your `php` executable is located elsewhere, use its full path to replace that of the example.
- 
+
+At this point, it is important to note that the file MUST be created using the Linux container CLI since Windows will not save characters the same way, resulting in errors stating that the php executable is not found.
+This error is likely caused by incompatible definitions of carriage returns between Windows and Linux, but this is not verified (let me know in an issue).
+
 ### Get Composer
 
 Get and install composer by following the instructions from the top of the page at `https://getcomposer.org/download/` which may be identical to those in the box below (date: March 27, 2024).
@@ -153,16 +158,16 @@ chmod +x codecept
 
 ### Preparing the Codeception folders
 
-Create the basic codeception testing suite using the bootstrap command 
+We create the basic codeception testing suite using the codeception `bootstrap` command as follows: 
 ```
 codecept bootstrap 
 ```
-This will create the tests folder and all default configurations.
-You may be told that modules are added and asked if you wisht to run `composer update`.
+This will create the `tests` folder and all default configurations.
+You may be told that modules are added and asked if you wish to run `composer update`.
 Answer `y` for yes.
 
-If you get any error, it is likely because codeception was not able to access the correct files because of the path.
-delete the tests and vendor folders, composer.json, composer.lock, and codeception.yml with the following commands:
+If you get any error, it is likely because codeception was not able to access the correct files because your path environment viariable does not contain `.`.
+Now you have to delete the tests and vendor folders, composer.json, composer.lock, and codeception.yml with the following commands:
 ```
 rm -rf tests
 rm -rf vendor
@@ -170,17 +175,16 @@ rm composer.lock
 rm composer.json
 rm codeception.yml
 ```
-Export . to the path as follows:
+This time, add `.` to the path for real, as follows:
 ```
 export PATH=$PATH:.
 ```
 Re-do section `Add Codeception to your project` and restart this section.
 
-### Configuring Codeception
+### Configure Codeception
 
-We will now configure the way that our tests are run by default by modifying the `Acceptance.suite.yml` file in the `tests` subfolder. 
-Specifically change `localhost/myapp` to `localhost` as in the following example: 
-
+We now configure how our tests are run by default by modifying the `Acceptance.suite.yml` file in the `tests` subfolder. 
+Specifically, change the value of url form `localhost/myapp` to `localhost` as in the following example:
 ```
 # Codeception Acceptance Test Suite Configuration
 #
@@ -198,25 +202,27 @@ step_decorators:
     - Codeception\Step\TryTo
     - Codeception\Step\Retry       
 ```
+We are assuming here that our project runs direct from the localhost URL and that there are no virtual servers.
 
 ## Building Test Suites 
 
-We now explore writing test specification using the Gherkin language to write feature descriptions and test scenarios
-The Gherkin language uses natural language with the addition of only a few simple keywords, allowing your clients to partake in the feature writing 
-Moreover, upon parsing of these tests, Codeception handles partial generation of the test code. 
+We now explore writing test specifications using the Gherkin language.
+Specifically, we write feature files which contain descriptions and test scenarios.
+
+The Gherkin language uses natural language with the addition of only a few simple keywords, allowing stakeholders to partake in the feature writing process.
+Moreover, upon parsing of these feature files, Codeception generates function stubs which you simply complete to have functional test code. 
 
 ### Generate Feature Files
-To generate your first feature file example, run the following command
+We generate a feature file, as an example, by running the following command:
 ```
 codecept g:feature Acceptance google
 ```
 Here we are asking codeception (`codecept`) to generate (`g:`) a `feature` in the `Acceptance` test folder with the name `google`.
-In the `tests/Acceptance` subfolder, we can find a new file named `google.feature`. 
+Codeception will add the file named `google.feature` in the `tests/Acceptance` subfolder. 
 Open this file, e.g.:
 ```
 nano tests/Acceptance/google.feature
 ```
-If you use nano, make your changes, then CTRL-O + ENTER to save the changed to your opened file and CTRL-X to exit.
 
 ### Complete Feature Files
 Let’s write the feature specification and test scenarios that make up the acceptance tests.
