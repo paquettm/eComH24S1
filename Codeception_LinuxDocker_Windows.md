@@ -101,15 +101,14 @@ At this point, it is important to note that the file MUST be created using the L
 This error is likely caused by incompatible definitions of carriage returns between Windows and Linux, but this is not verified (let me know in an issue).
 
 ### Get Composer
-
-Get and install composer by following the instructions from the top of the page at `https://getcomposer.org/download/` which may be identical to those in the box below (date: March 27, 2024).
+From the project base folder, which is `/opt/lampp/htdocs` in the container used in this example, get and install composer by following the instructions from the `Command-line installation` section of the page at `https://getcomposer.org/download/` which may be identical to those in the box below, dated March 27, 2024:
 ```
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 php composer-setup.php
 php -r "unlink('composer-setup.php');"
 ```
-The instructions will install the `composer.phar` file to the current folder (`/opt/lampp/htdocs` which was mapped to your project folder).
+These instructions will install the `composer.phar` file to the `/opt/lampp/htdocs` folder, which should be mapped to your project folder.
  
 ### Shortcut to Composer
 We now write another shortcut file named `composer` in the `/opt/lampp/htdocs` folder, full path `/opt/lampp/htdocs/composer`, to run `php composer.phar`, forwarding all call parameters.
@@ -127,13 +126,14 @@ chmod +x composer
 ### Add Codeception to your project
 
 To add Codeception to your project development dependencies we use composer.
-From the CLI, while located in your project base folder, run 
+From the CLI, while located in your project base folder `/opt/lampp/htdocs`, run 
 ```
 composer require "codeception/codeception" --dev 
 ```
 If you ever get an error such as `bash: YOUR_COMMAND: command not found` where YOUR_COMMAND can be any command, then run the PATH export command shown above.
+You really should not get this error at this point, unless you had to restart your bash terminal.
 
-**You should see a new folder appear: vendor.**
+**You should see a new folder appear, named `vendor`.**
 If it was already there, then some other subfolders probably appeared and, especially notice the `composer.json` file should now contain mention of Codeception in a dev section, similar (but maybe different) to the following: 
 ```
 { 
@@ -145,18 +145,19 @@ If it was already there, then some other subfolders probably appeared and, espec
 
 ### Shortcut to Codeception
 
-Next, we create a script file named `codecept` in the `/opt/lampp/htdocs/` directory, maybe with the command `nano /opt/lampp/htdocs/codecept`, as a shortcut to the codecept script, containing: 
+Next, we create yet another script file, named `codecept`, in the `/opt/lampp/htdocs/` directory, maybe with the command `nano /opt/lampp/htdocs/codecept`, as a shortcut to the `codecept` script.
+The file contains: 
 ```
 #!/bin/bash
 
 ./php vendor/bin/codecept "$@" 
 ```
-and make it executable with
+Make the file executable with
 ```
 chmod +x codecept
 ```
 
-### Preparing the Codeception folders
+### Prepare the Codeception folders
 
 We create the basic codeception testing suite using the codeception `bootstrap` command as follows: 
 ```
