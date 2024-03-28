@@ -132,7 +132,7 @@ If it was already there, then some other subfolders probably appeared and, espec
 
 ### Shortcut to Codeception
 
-Next, for convenience again, we create a script `/opt/lampp/codecept` as a shortcut to the codecept script as, containing: 
+Next, for convenience again, we create a script `/opt/lampp/htdocs/codecept` as a shortcut to the codecept script as, containing: 
  
 ```
 #!/bin/bash
