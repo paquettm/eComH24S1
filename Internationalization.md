@@ -21,21 +21,21 @@ This runs the bash terminal program and gives you access at the command line.
 
 ## Software Setup
 
-We have a few tools to setup and configurations to make before we can dive into Internationalization and Localization.
+We have a few tools to setup and configurations to make before we can dive into Internationalisation and Localisation.
 
-To internationalize our Web applications means that we get these applications ready to accept localizations.
-Localizations are translations of our Web applications to apply the local language and formats for Date, Currency, etc.
-Localization is providing a translation of language and formats for the application.
+To internationalise our Web applications means that we get these applications ready to accept localisations.
+Localisations are translations of our Web applications to apply the local language and formats for Date, Currency, etc.
+Localisation is providing a translation of language and formats for the application.
 
 There are many ways to proceed for this, but one of the most widespread utility to provide these services is gettext.
 Gettext is so popular because it loads language definitions in memory and can serve up results to web clients based on their language settings, with minimal code added to our applications.
 
 More specifically, 
 - Strings in our views will be output by a gettext function instead of directly. This will imply that each string is output from the `_()` function within a php output block `<?= ?>` as follows `<?=_('string')?>`.
-- These strings will then get extracted by a tool, xgettext, and placed in a localization template.
+- These strings will then get extracted by a tool, xgettext, and placed in a localisation template.
 - Code to select the language is run at each request.
 
-The process of localization will use the localization template and translation files will be placed in a strict folder structure.
+The process of localisation will use the localisation template and translation files will be placed in a strict folder structure.
 
 ### Fixing xgettext in the docker container 
 
@@ -105,10 +105,10 @@ chmod +x extract
 
 Internationalisation is a long word starting with I, followed by 18 letters and then n, hence it is abbreviated i18n. It is the process of taking an application and making it compatible with localisations. Localisations are different translations of your Web applications. 
 
-### Internationalize your view strings 
+### Internationalise your view strings 
 
 For all views, convert the files to output strings from PHP with _("") around all strings excluding the HTML tags containing these strings. For example: 
-
+```
 <html> 
 <head><title>Hello World!</title></head> 
 <body> 
@@ -116,27 +116,28 @@ For all views, convert the files to output strings from PHP with _("") around al
 <p>I like cats.</p> 
 </body> 
 </html> 
-
+```
 becomes 
-
+```
 <html> 
 <head><title><?= _("Hello World!") ?></title></head> 
 <body> 
 <h1><?= _("Hello World!") ?></h1> 
 <p><?= _("I like cats.") ?></p></body> 
 </html> 
+```
 
-### Internationalize your other strings 
+### Internationalise your other strings 
 
 If you have strings output directly in your controllers, or in helper functions, don’t forget about them. For example, 
-
+```
 echo “The current date is ”, strftime("%V,%A,%G,%Y", $date1->getTimestamp()); 
-
+```
 should become 
-
+```
 echo _(“The current date is ”), strftime(_("%V,%A,%G,%Y"), $date1->getTimestamp()); 
-
-This way, we internationalize the text and also the date formats. 
+```
+This way, we internationalise the text and also the date formats. 
 
 ### Extract all Strings to Adapt 
 
@@ -154,15 +155,16 @@ Then rename the file to .pot to make it a “template”.
 ### Folder Structure for Resource Files 
 
 Build a folder structure from the project base folder (where .htaccess and the index.php entry point are located), htdocs for example, as follows: 
-
+```
 htdocs 
  └locale 
    └en 
      └LC_MESSAGES 
+```
+This is the way to work under Windows because Windows only accepts working with its installed locales.
+Here we assume the installed locale is “en” and we will show you later how to determine the installed locale on your Windows computer. 
 
-This is the way to work under Windows because Windows only accepts working with its installed locales. Here we assume the installed locale is “en” and we will show you later how to determine the installed locale on your Windows computer. 
-
-Determining which Language to Use 
+### Determining which Language to Use 
 
 You may be using a different base language on your computer and therefore may need to change the folder name “en” above. To determine this, proceed as follows: 
 
@@ -172,12 +174,13 @@ Run the PHP code "echo Locale::getDefault();" to see which base localisation is 
 
 If the result is not “en” or “en_xx” where xx could be anything, then change the path above to the part of the locale before the underscore. E.g., if your result is fr_CA, then rename the “en” folder to “fr”. 
 
-Loading the Resource Files 
+### Loading the Resource Files 
 
 We have not created the resource files yet, this will be the process of localisation (l10n). 
 
 To load existing resource files for your language, add the following code at the starting point of your application. This could be an initialization script that includes all resources, for example the init.php file in our homemade framework (read the comments for explanations): 
 
+```
 //to accept languages from the querystring as follows: mysite.com?lang=fr_CA 
 if(isset($_GET['lang'])){ //if there is a language choice in the querystring 
 	$lang = $_GET['lang'];//use this language 
@@ -191,10 +194,9 @@ $rootlang = (is_array($rootlang)?$rootlang[0]:$rootlang);
 setlocale(LC_ALL, $rootlang.".UTF8");//which locale to use. .UTF8 is to ensure proper encoding of output 
 bindtextdomain($lang, "locale"); //pointing to the locale folder for the language of choice 
 textdomain($lang); //what is the file name to find translations 
+```
 
- 
-
-Localisation (l10n) 
+## Localisation (l10n) 
 
 Localisation is the process of adapting the application for different locales. This means we modify the language, and also the way some data is displayed, e.g., dates. 
 
@@ -219,5 +221,3 @@ Once you are done, save the fr_CA.po file to the LC_MESSAGES folder that we crea
 Run the application with the localisation 
 
 For the fr_CA localisation that we just created, you should be able to run it by adding ?lang=fr_CA to any URL accessing the Web application. 
-
- 
