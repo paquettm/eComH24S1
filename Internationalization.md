@@ -19,20 +19,38 @@ docker exec -it myXampp bash
 ```
 This runs the bash terminal program and gives you access at the command line.
 
-## Fixing XGetText in the docker container 
+## Software Setup
 
-For some reason, xgettext requires libgomp1 and this is not part of the docker image. To fix this, run  
+We have a few tools to setup and configurations to make before we can dive into Internationalization and Localization.
 
+To internationalize our Web applications means that we get these applications ready to accept localizations.
+Localizations are translations of our Web applications to apply the local language and formats for Date, Currency, etc.
+Localization is providing a translation of language and formats for the application.
+
+There are many ways to proceed for this, but one of the most widespread utility to provide these services is gettext.
+Gettext is so popular because it loads language definitions in memory and can serve up results to web clients based on their language settings, with minimal code added to our applications.
+
+More specifically, 
+- Strings in our views will be output by a gettext function instead of directly. This will imply that each string is output from the `_()` function within a php output block `<?= ?>` as follows `<?=_('string')?>`.
+- These strings will then get extracted by a tool, xgettext, and placed in a localization template.
+- Code to select the language is run at each request.
+
+The process of localization will use the localization template and translation files will be placed in a strict folder structure.
+
+### Fixing xgettext in the docker container 
+
+Xgettext is a tool which we will use to extract translatable strings from our Web application views.
+
+This tool requires libgomp1 and for some reason this package is not part of the docker image.
+To fix this, run  
 ```
 apt update 
 apt install libgomp1
 ```
 
-## Software setup for your project 
+### Shortcut to xgettext 
 
-We will create 2 script files to help our development.
-These files should be created in the project base folder.
-Create a xgdettext file in your project folder using the command prompt as follows: 
+Create a file named `xgettext` in your project folder using the command prompt as follows: 
 
 ```
 nano /opt/lampp/htdocs/xgettext
@@ -50,9 +68,9 @@ Fix the environment by adding . to the PATH:
 export PATH=$PATH:.
 ```
 
-Test the script 
+Test the script by navigating to the htdocs folder (with `cd /opt/lampp/htdocs` if that is not already done) and running the command as follows: 
 ```
-/opt/lampp/htdocs/xgettext --version
+xgettext --version
 ```
 Your output should look like this:
 ```
@@ -63,21 +81,31 @@ This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
 Written by Ulrich Drepper.
 ```
+	
+The command `xgettext -a *.php` can get all strings from the php files in the current folder.
+But to get all files in subfolders you need to use find. 
 
+### Extraction Process
 
-The command xgettext -a *.php can get all strings from the php files in the current folder. But to get all files in subfolders you need to use Gnu find. 
+To extract all strings from all
 
-Create a .bat file in your project folder using the command prompt as follows: 
+Create the file `/opt/lampp/htdocs/extract' which will use `find` to search for all php files and run xgettext on each one.
+The file should have the following content:
+```
+touch messages.po
+find ./app/views -type f -name "*.php" -exec xgettext -j {} \;
+mv messages.po messages.pot
+```
+Make it executable
+```
+chmod +x extract
+```
 
-copy con find.bat 
-"\GnuWin32\bin\find" %* 
-^Z 
-
-Internationalisation (i18n) 
+## Internationalisation (i18n) 
 
 Internationalisation is a long word starting with I, followed by 18 letters and then n, hence it is abbreviated i18n. It is the process of taking an application and making it compatible with localisations. Localisations are different translations of your Web applications. 
 
-Internationalize your view strings 
+### Internationalize your view strings 
 
 For all views, convert the files to output strings from PHP with _("") around all strings excluding the HTML tags containing these strings. For example: 
 
@@ -98,7 +126,7 @@ becomes
 <p><?= _("I like cats.") ?></p></body> 
 </html> 
 
-Internationalize your other strings 
+### Internationalize your other strings 
 
 If you have strings output directly in your controllers, or in helper functions, don’t forget about them. For example, 
 
@@ -110,15 +138,20 @@ echo _(“The current date is ”), strftime(_("%V,%A,%G,%Y"), $date1->getTimest
 
 This way, we internationalize the text and also the date formats. 
 
-Extract all Strings to Adapt 
+### Extract all Strings to Adapt 
 
-From the htdocs folder, run the following commands to create a messages.po file with all strings from all subfolders, starting in the current folder. The first command creates an empty file, the next renames index.php to allow find to scan all files, then we run the find command to run gettext on all php files and finally reestablish index.php. Then rename the file to .pot to make it a “template”. 
+From the `/opt/lampp/htdocs` folder, run the `extract` script that we built earlier to create the `messages.pot` file with all strings from all views.
+As a reminder, the script contains the following commands:
+```
+touch messages.po
+find ./app/views -type f -name "*.php" -exec xgettext -j {} \;
+mv messages.po messages.pot
+```
+The first command creates an empty file.
+Then we run the find command to run gettext on all php files in our views.
+Then rename the file to .pot to make it a “template”. 
 
-type nul > messages.po 
-find app -regex ".*\.php" -exec xgettext –j {} ; 
-ren messages.po messages.pot 
-
-Folder Structure for Resource Files 
+### Folder Structure for Resource Files 
 
 Build a folder structure from the project base folder (where .htaccess and the index.php entry point are located), htdocs for example, as follows: 
 
