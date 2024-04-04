@@ -286,7 +286,7 @@ We will now create translations starting from the template file messages.pot.
 
 The `msginit` tool is built to prepare .po translation files ready to accept new translations.
 
-Create the `/opt/lampp/htdocs/msgfmt` script with the following contents:
+Create the `/opt/lampp/htdocs/msginit` script with the following contents:
 ```
 /opt/lampp/bin/msginit "$@"
 ```
