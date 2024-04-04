@@ -1,4 +1,8 @@
 # Internationalisation and Localisation of an MVC Web Application in a Docker container
+In this tutorial, we build an internationalisation system based on the way `gettext` works without the limitations and difficulties that it imposes.
+We will follow the same techniques and you will be able to work with `gettext` with minimal adjustment in the future.
+We will instead use the Symfony Translation component, which we will install using Composer.
+The system conceptually resembles the following:
 ```
 +-------------------+
 |     VIEW File     |
