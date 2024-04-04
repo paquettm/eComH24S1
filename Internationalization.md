@@ -1,19 +1,19 @@
 # Internationalisation and Localisation of an MVC Web Application in a Docker container
 ```
 +-------------------+
-|     HTML File     |
+|     VIEW File     |
 |                   |
 | <?=__('Hello')?>  |
 | <?=__('World')?>  |
 +-------------------+
             |
-            | Calls __() function
+            | Calls __() function (2 underscores here)
             |
 +-------------------+
 |     i18n.php      |
 |                   |
 | <?php             |
-| ...
+| ...               |
 | $t = new \Symfony\Component\Translation\Translator($locale);
 | $t->addLoader('mo', new \Symfony\Component\Translation\Loader\MoFileLoader());
 | $t->addResource('mo',"messages.mo", $locale);
