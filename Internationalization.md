@@ -71,7 +71,7 @@ Localisations are translations of our Web applications to apply the local langua
 Localisation is providing a translation of language and formats for the application.
 
 There are many ways to proceed for this, but one of the most widespread utility to provide these services is gettext.
-Gettext popular because it loads language definitions in memory and can serve up results to web clients based on their language settings, with minimal code added to our applications.
+Gettext is popular because it loads language definitions in memory and can serve up results to web clients based on their language settings, with minimal code added to our applications.
 Sadly however, gettext is hard to get working... so we will use the Translation component of Symfony, while keeping the same level of simplicity as gettext in our views.
 
 More specifically, 
