@@ -28,11 +28,12 @@ Localisations are translations of our Web applications to apply the local langua
 Localisation is providing a translation of language and formats for the application.
 
 There are many ways to proceed for this, but one of the most widespread utility to provide these services is gettext.
-Gettext is so popular because it loads language definitions in memory and can serve up results to web clients based on their language settings, with minimal code added to our applications.
+Gettext popular because it loads language definitions in memory and can serve up results to web clients based on their language settings, with minimal code added to our applications.
+Sadly however, gettext is hard to get working... so we will use the Translation component of Symfony, while keeping the same level of simplicity as gettext in our views.
 
 More specifically, 
-- Strings in our views will be output by a gettext function instead of directly. This will imply that each string is output from the `_()` function within a php output block `<?= ?>` as follows `<?=_('string')?>`.
-- These strings will then get extracted by a tool, xgettext, and placed in a localisation template.
+- Strings in our views will be output by a function instead of directly. More specifically, each string is output by the `__()` (two underscores) function within a php output block `<?= ?>` as follows `<?=__('string')?>`.
+- These strings will then get extracted by the xgettext tool and placed in a localisation template.
 - Code to select the language is run at each request.
 
 The process of localisation will use the localisation template and translation files will be placed in a strict folder structure.
@@ -93,21 +94,30 @@ Create the file `/opt/lampp/htdocs/extract' which will use `find` to search for 
 The file should have the following content:
 ```
 touch messages.po
-find ./app/views -type f -name "*.php" -exec xgettext -j {} \;
+find ./app/views -type f -name "*.php" -exec xgettext --keyword=__ -j {} \;
 mv messages.po messages.pot
 ```
-Make it executable
+This will do the following:
+1. create the messages.po file for output
+2. find all php files within the views folder and its subfolders
+3. process each of these files and find all strings enclosed within the `__()` function.
+4. rename messages.po to messages.pot
+
+Make the extract script executable
 ```
 chmod +x extract
 ```
 
 ## Internationalisation (i18n) 
 
-Internationalisation is a long word starting with I, followed by 18 letters and then n, hence it is abbreviated i18n. It is the process of taking an application and making it compatible with localisations. Localisations are different translations of your Web applications. 
+Internationalisation is a long word starting with `i`, ending with `n`, and counting 18 letters in between.
+Hence the abbreviation i18n.
+It is the process of taking an application and making it compatible with localisations.
+Localisations are different translations of your Web applications. 
 
 ### Internationalise your view strings 
 
-For all views, convert the files to output strings from PHP with _("") around all strings excluding the HTML tags containing these strings. For example: 
+For all views, convert the files to output strings from PHP with `<?=__('')?>` around all strings excluding the HTML tags containing these strings. For example: 
 ```
 <html> 
 <head><title>Hello World!</title></head> 
@@ -120,10 +130,10 @@ For all views, convert the files to output strings from PHP with _("") around al
 becomes 
 ```
 <html> 
-<head><title><?= _("Hello World!") ?></title></head> 
+<head><title><?= __('Hello World!') ?></title></head> 
 <body> 
-<h1><?= _("Hello World!") ?></h1> 
-<p><?= _("I like cats.") ?></p></body> 
+<h1><?= __('Hello World!') ?></h1> 
+<p><?= __('I like cats.') ?></p></body> 
 </html> 
 ```
 
@@ -131,11 +141,11 @@ becomes
 
 If you have strings output directly in your controllers, or in helper functions, don’t forget about them. For example, 
 ```
-echo “The current date is ”, strftime("%V,%A,%G,%Y", $date1->getTimestamp()); 
+echo 'The current date is ', strftime('%V,%A,%G,%Y', $date1->getTimestamp()); 
 ```
 should become 
 ```
-echo _(“The current date is ”), strftime(_("%V,%A,%G,%Y"), $date1->getTimestamp()); 
+echo __('The current date is '), strftime(__('%V,%A,%G,%Y'), $date1->getTimestamp()); 
 ```
 This way, we internationalise the text and also the date formats. 
 
@@ -145,55 +155,82 @@ From the `/opt/lampp/htdocs` folder, run the `extract` script that we built earl
 As a reminder, the script contains the following commands:
 ```
 touch messages.po
-find ./app/views -type f -name "*.php" -exec xgettext -j {} \;
+find ./app/views -type f -name "*.php" -exec xgettext --keyword=__ -j {} \;
 mv messages.po messages.pot
 ```
 The first command creates an empty file.
-Then we run the find command to run gettext on all php files in our views.
+Then we run the find command to run xgettext on all php files in our views.
 Then rename the file to .pot to make it a “template”. 
 
 ### Folder Structure for Resource Files 
 
-Build a folder structure from the project base folder (where .htaccess and the index.php entry point are located), htdocs for example, as follows: 
+Build a folder structure from the project base folder (where `.htaccess` and the `index.php` entry point are located), htdocs for example, as follows: 
 ```
 htdocs 
- └locale 
+ └locales 
    └en 
      └LC_MESSAGES 
 ```
-This is the way to work under Windows because Windows only accepts working with its installed locales.
-Here we assume the installed locale is “en” and we will show you later how to determine the installed locale on your Windows computer. 
-
-### Determining which Language to Use 
-
-You may be using a different base language on your computer and therefore may need to change the folder name “en” above. To determine this, proceed as follows: 
-
-In php.ini, activate intl extension and restart Apache. 
-
-Run the PHP code "echo Locale::getDefault();" to see which base localisation is used on your computer. 
-
-If the result is not “en” or “en_xx” where xx could be anything, then change the path above to the part of the locale before the underscore. E.g., if your result is fr_CA, then rename the “en” folder to “fr”. 
+In this tree structure, en is one of the locales.
+There will be one branch per locale, for example, the following structures are for the `fr` locale and the `es` locale:
+```
+htdocs 
+ └locales 
+   └fr 
+     └LC_MESSAGES 
+```
+and
+```
+htdocs 
+ └locales 
+   └es 
+     └LC_MESSAGES 
+```
 
 ### Loading the Resource Files 
 
-We have not created the resource files yet, this will be the process of localisation (l10n). 
+We have not created the resource files yet, this will be the process of localisation (l10n), which we will see in the next section.
 
-To load existing resource files for your language, add the following code at the starting point of your application. This could be an initialization script that includes all resources, for example the init.php file in our homemade framework (read the comments for explanations): 
-
+To load existing resource files, we will make use of the Symfony Translation component.
+In our project folder, we will add the Symfony Translation component by running
 ```
-//to accept languages from the querystring as follows: mysite.com?lang=fr_CA 
-if(isset($_GET['lang'])){ //if there is a language choice in the querystring 
-	$lang = $_GET['lang'];//use this language 
-	setcookie("lang",$lang, 0, '/'); //set a cookie for the entire domain 
-}else 
-	$lang=(isset($_COOKIE["lang"])?$_COOKIE["lang"]:'en'); //from cookie or default 
-//extract the root language from the complete locale to use with strftime 
-$rootlang = preg_split('/_/', $lang); 
-$rootlang = (is_array($rootlang)?$rootlang[0]:$rootlang); 
+composer require symfony/translation
+```
+This will add all the packages that are required to handle the translation files.
+Next, we will include the composer autoload files to our Web application code by adding the following line in the `app/core/init.php` file, just below the session_start(); instruction:
+```
+require_once('vendor/autoload.php');
+require('app/core/i18n.php');
+```
+The second inclusion is for the next file we will write, `app/core/i18n.php`, which will load the language resources as required.
+The file goes as follows:
+```
+<?php
+//use statements to simplify code below
+use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\Loader\MoFileLoader;
+//list the localisations that have been built
+$supportedLocales = ['fr', 'en'];
+//get the requested locale to use here we default to 'fr'
+$locale = $_GET['lang'] ?? $_COOKIE['lang'] ?? 'fr';
+//ensure the locale is supported
+if(!in_array($locale, $supportedLocales))
+	$locale = 'fr';
+//save the setting to a cookie
+setcookie('lang',$locale,0,'/');
+//initialise a translator object for the locale
+$t = new Translator($locale);
+//add a loader for .mo files
+$t->addLoader('mo', new MoFileLoader());
+//grab the .mo file resource from the folders previously built
+$t->addResource('mo',"./locales/$locale/LC_MESSAGES/messages.mo", $locale);
 
-setlocale(LC_ALL, $rootlang.".UTF8");//which locale to use. .UTF8 is to ensure proper encoding of output 
-bindtextdomain($lang, "locale"); //pointing to the locale folder for the language of choice 
-textdomain($lang); //what is the file name to find translations 
+//define a helper function to load translations from the translator
+//that remains unobstrusive for writing in views
+function __($message){
+	global $t;
+	return $t->trans($message);
+}
 ```
 
 ## Localisation (l10n) 
@@ -202,22 +239,77 @@ Localisation is the process of adapting the application for different locales. T
 
 We will now create translations starting from the template file messages.pot. 
 
-Use Poedit to open the new messages.pot file 
+### Tool setup: msginit and msgfmt
 
-Open Poedit, click “Browse files” and open the messages.pot file produced in an earlier step. If you have a red window on top, set the data and save it else click create new translation. Let’s use French (Canada) for our example. 
+The `msginit` tool is built to prepare .po translation files ready to accept new translations.
 
-Select French(Canada) 
+Create the `/opt/lampp/htdocs/msgfmt` script with the following contents:
+```
+/opt/lampp/bin/msginit "$@"
+```
+Make it executable:
+```
+chmod +x /opt/lampp/htdocs/msginit
+```
 
-You will be presented with a list of strings extracted from your application in the top pane, and you will need to provide translations for all of these that need to change for this language/locale. For all strings in the top pane: 
+The `msgfmt` tool is built to build .mo binary translation files from .po translations files.
 
-Select the string to translate in the source text pane on top 
+Create the `/opt/lampp/htdocs/msgfmt` script with the following contents:
+```
+/opt/lampp/bin/msgfmt "$@"
+```
+Make it executable:
+```
+chmod +x /opt/lampp/htdocs/msgfmt
+```
 
-Confirm the source text in the middle pane 
+### Initialise the translation
 
-Provide the translation in the bottom pane or clock on the right choice in the right pane... but these given options will run out. 
+Make sure that you have the folders needed for your new localisation.
+Here we will build the english localisation:
+```
+cd /opt/lampp/htdocs/locales
+mkdir en
+cd en
+mkdir LC_MESSAGES
+```
+Go back to `/opt/lampp/htdocs`.
+```
+cd /opt/lampp/htdocs
+```
+Run the utility for english:
+```
+msginit --input messages.pot --locale=en --output=locales/en/LC_MESSAGES/messages.po
+```
 
-Once you are done, save the fr_CA.po file to the LC_MESSAGES folder that we created earlier. 
+### Edit the .po file:
+```
+nano locales/en/LC_MESSAGES/messages.po
+```
 
-Run the application with the localisation 
+Your objective is to complete all the `msgid/msgstr` pairs such that there is actual text associated to each message id string.
+For English, a pair may look as follows:
+```
+#: app/views/User/login.php:11 app/views/User/registration.php:12
+#: app/views/User/update.php:12
+msgid "Username:"
+msgstr "Username:"
+```
+For French it may look as follows:
+```
+#: app/views/User/login.php:11 app/views/User/registration.php:12
+#: app/views/User/update.php:12
+msgid "Username:"
+msgstr "Nom d'utilisateur:"
+```
 
-For the fr_CA localisation that we just created, you should be able to run it by adding ?lang=fr_CA to any URL accessing the Web application. 
+### Convert the .po to .mo (binary)
+To make the file easily read by the application, it is best to convert it to the .mo binary format as follows:
+```
+msgfmt -o locales/en/LC_MESSAGES/messages.mo locales/en/LC_MESSAGES/messages.po
+```
+
+### Run the application with the localisation 
+
+For the `en` localisation that we just created, you should be able to run it by adding `?lang=en` to any URL accessing the Web application. 
+For the `fr` localisation, you should be able to run it by adding `?lang=fr` to any URL accessing the Web application. 
