@@ -41,7 +41,7 @@ The system conceptually resembles the following:
 |  msgstr "Monde"   |
 +-------------------+
 ```
-
+We will use the tomsik68/xampp Docker image as we did throughout the semester.
 
 ## Start your Docker Container
 
