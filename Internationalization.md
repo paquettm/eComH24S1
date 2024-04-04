@@ -3,8 +3,8 @@
 +-------------------+
 |     HTML File     |
 |                   |
-|  <p><?=__('Hello')?>  |
-|     <?=__('World')?>  |
+| <?=__('Hello')?>  |
+| <?=__('World')?>  |
 +-------------------+
             |
             | Calls __() function
@@ -28,7 +28,7 @@
             |
 +-------------------+
 |   messages.mo     |
-|   (Translation File) |
+| (Translation File)|
 |                   |
 |  msgid "Hello"    |
 |  msgstr "Bonjour" |
