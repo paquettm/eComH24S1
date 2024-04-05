@@ -258,5 +258,28 @@ Create a `User/check2fa` view to allow the user to send in their 6-digit TOTP co
 
 Create a method `check2fa` in the `User` controller class as follows:
 ```
-
+function check2fa(){
+	if($_SERVER['REQUEST_METHOD']==='POST'){
+		$options = new AuthenticatorOptions();
+		$authenticator = new Authenticator($options);
+		$authenticator->setSecret($_SESSION['secret']);
+		if($authenticator->verify($_POST['totp'])){
+			unset($_SESSION['secret']);
+			header('location:/Profile/index');//the good place
+		}else{
+			session_destroy();
+			header('location:/User/login');
+		}
+	}else{
+		$this->view('User/check2fa');
+	}
+}
 ```
+On a GET request, the method displays the view with the TOTP submission form.
+
+Upon receiving a POST request, the method created the authenticator object with default options and sets the secret from the session.
+It then verifies the TOTP against the known secret and if the check is positive, then it unsets he secret form the session to allow access unhindered by the above-modified access filter.
+If the check is unsuccesful, the user is considered logged out and redirected to login.
+
+# Conclusion
+Your implementation may be different, but we have seen basics which allow the implementation of TOTP-based 2-factor authentication using packages available with composer.
