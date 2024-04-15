@@ -47,10 +47,11 @@ git commit -m "adding instructions"
 
 Start Docker Desktop first.
 
-Then run 
+Then navigate to your project web root folder (the one containing .htaccess, index.php, and the app folder) and run the following command from the command line:
 ```
-docker run --name myXampp -p 22:22 -p 80:80 -d -v C:/Users/paquettm/eComH24S1:/opt/lampp/htdocs tomsik68/xampp
+docker run --name myXampp -p 22:22 -p 80:80 -d -v %CD%:/opt/lampp/htdocs tomsik68/xampp
 ```
+The `%CD%` term will automatically be replaced by the Windows environment by the current directory.
 
 ## Accessing the project
 
