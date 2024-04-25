@@ -65,6 +65,18 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`user_id`, `username`, `password_hash`, `active`) VALUES
 (1, 'Tarzan', '$2y$10$.c/0uj/ezTONgPUYzD/8auuOtxC.pllo8LOotHZVecYKP3XV3EmgK', 1);
 
+
+DROP TABLE IF EXISTS `picture`;
+CREATE TABLE `picture` (
+  `picture_id` int(11) NOT NULL,
+  `filename` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `picture`
+--
+ALTER TABLE `picture`
+  ADD PRIMARY KEY (`picture_id`);
 --
 -- Indexes for dumped tables
 --
