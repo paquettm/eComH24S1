@@ -22,3 +22,10 @@ $this->addRoute('Example/index' , 'Example,index');
 $this->addRoute('Example/clock','Example,clock');
 $this->addRoute('Example/passingData','Example,passingData');
 $this->addRoute('Example/count','Example,count');
+$this->addRoute('','LocationController,index');
+$this->addRoute('location/index','LocationController,index');
+$this->addRoute('location/edit/{id}','LocationController,edit');
+$this->addRoute('location/delete/{id}','LocationController,delete');
+$this->addRoute('location/create','LocationController,create');
+
+$this->addRoute('Example/feedback/{data}','Example,feedback');

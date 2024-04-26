@@ -30,5 +30,10 @@ class Example extends \app\core\Controller{
 		$this->view('Example/passingData', $date);
 	}
 
+
+	function feedback($data){
+		echo json_encode(['data'=>$data]);
+	}
+
 }
 

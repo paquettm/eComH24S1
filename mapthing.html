@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap and Leaflet Map</title>
+ <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" crossorigin=""/>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js" crossorigin=""></script>
+
+
+    <style>
+        /* Additional styles for the map */
+        #map {
+            height: 400px; /* Adjust the height of the map as needed */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Bootstrap Container -->
+    <div class="container">
+        <!-- Input and Button Section -->
+        <div class="my-4">
+            <input id="input-text" type="text" class="form-control mb-2" placeholder="Enter text here">
+            <button id="submit-btn" class="btn btn-primary" onclick="fetchData()">Submit</button>
+        </div>
+
+        <!-- Lorem Ipsum Section -->
+        <div id="lorem-ipsum" class="my-4">
+            <h2>Lorem Ipsum</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+            <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+        </div>
+
+        <!-- Leaflet Map Section -->
+        <div id="map" class="my-4"></div>
+    </div>
+
+    <!-- JavaScript to initialize Leaflet map and handle fetch request -->
+    <script>
+        // Initialize Leaflet map
+        var map = L.map('map').setView([51.505, -0.09], 13);
+
+        // Add OpenStreetMap tiles to the map
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Optionally, you can add a marker to the map
+        L.marker([51.505, -0.09]).addTo(map)
+            .bindPopup('A marker on the map!')
+            .openPopup();
+
+        // JavaScript function to handle the fetch request and replace the content
+        function fetchData() {
+            var inputText = document.getElementById("input-text").value;
+            var url = "/Example/feedback/" + inputText;
+
+            // Make the fetch request
+            fetch(url)
+                .then(response => {
+                    // Check if the response is successful
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .then(data => {
+                    // Replace the content of the lorem-ipsum div with the response text
+                    document.getElementById("lorem-ipsum").innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch request:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>
